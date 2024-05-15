@@ -25,6 +25,7 @@
         <module>extensions-encryption</module>
         <module>extensions-data-delivery</module>
         <module>extensions-data-lineage</module>
+        <module>extensions-daz</module>
         <module>extensions-docker</module>
         <module>extensions-alerting</module>
         <module>extensions-messaging</module>

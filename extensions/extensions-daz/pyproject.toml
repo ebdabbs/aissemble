@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "extensions-daz"
+version = "1.7.0.dev"
+description = "Establishes a shared Poetry cache for all aiSSEMBLE Docker images to leverage"
+authors = ["aiSSEMBLE Baseline Community <aissemble@bah.com>"]
+readme = "README.md"
+packages = [
+    {include = "daz", from = "src"},
+]
+
+[tool.poetry.dependencies]
+python = ">=3.11.4, <3.12"
+
+aissemble-foundation-core-python = {path = "../../foundation/aissemble-foundation-core-python/", develop = true}
+aissemble-foundation-messaging-python = {path = "../../foundation/foundation-messaging/foundation-messaging-python/aissemble-foundation-messaging-python-client/", develop = true}
+aissemble-foundation-model-training-api = {path = "../../foundation/aissemble-foundation-model-training-api/", develop = true}
+aissemble-foundation-pdp-client-python = {path = "../../foundation/foundation-security/aissemble-foundation-pdp-client-python/", develop = true}
+aissemble-foundation-versioning-service = {path = "../../foundation/aissemble-foundation-versioning-service/", develop = true}
+aissemble-extensions-data-delivery-spark-py = {path = "../extensions-data-delivery/aissemble-extensions-data-delivery-spark-py/", develop = true}
+aissemble-extensions-model-training-api-sagemaker = {path = "../aissemble-extensions-model-training-api-sagemaker", develop = true}
+
+
+[tool.poetry.group.dev.dependencies]
+black = ">=22.1.0"
+behave = ">=1.2.6"
+nose = ">=1.3.7"
+pylint = "^3.1.0"
+
+
+
+[build-system]
+requires = ["poetry-core>=1.7.0"]
+build-backend = "poetry.core.masonry.api"
