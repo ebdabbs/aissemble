@@ -278,12 +278,12 @@
                           updating the activate profiles of release.properties.
 
                           Also add pyproject.toml changes to git (see below)-->
-                        <preparationGoals>clean install scm:add -Pskip-helm</preparationGoals>
+                        <preparationGoals>clean install scm:add -Pskip-helm -Dmaven.build.cache.enabled=false</preparationGoals>
 
                         <!-- Because the release plugin doesn't build after updating to the next development snapshot,
                           the habushu-managed updates to pyproject.toml files lags behind. To prevent the first
                           committer after a release from needing to commit these files, we force the update here. -->
-                        <completionGoals>org.technologybrewery.habushu:habushu-maven-plugin:initialize-habushu</completionGoals>
+                        <completionGoals>org.technologybrewery.habushu:habushu-maven-plugin:initialize-habushu -Dmaven.build.cache.enabled=false</completionGoals>
                         <releaseProfiles>release</releaseProfiles>
                     </configuration>
                 </plugin>
@@ -296,7 +296,7 @@
                     <inherited>false</inherited>
                     <configuration>
                         <includes>**/pyproject.toml</includes>
-                        <excludes>**/target/**</excludes>
+                        <excludes>**/target/**,**/.venv/**</excludes>
                         <pushChanges>false</pushChanges>
                     </configuration>
                 </plugin>
