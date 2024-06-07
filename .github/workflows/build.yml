@@ -30,6 +30,8 @@ jobs:
           ref: ${{ inputs.buildBranch }}
       - name: install curl
         run: sudo apt-get install -y curl
+      - name: install git
+        run: sudo apt-get install -y git-all
       - name: install PyEnv
         run: |
           curl https://pyenv.run | bash
