@@ -128,7 +128,7 @@ public class ConfigStoreInitTestHelper extends ConfigStoreInit {
         Map<String, Object> root = new LinkedHashMap<>();
         ArrayList<Map<String, Object>> propertyList = new ArrayList<>();
         for (Property property: properties) {
-            propertyList.add(Map.of("name", property.getName(), "value", property.getValue()));
+            propertyList.add(Map.of("name", property.getPropertyName(), "value", property.getValue()));
         }
         root.put("groupName", groupName);
         root.put("properties", propertyList);

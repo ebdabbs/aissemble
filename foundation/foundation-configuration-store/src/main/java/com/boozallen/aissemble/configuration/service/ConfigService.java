@@ -12,6 +12,8 @@ package com.boozallen.aissemble.configuration.service;
 
 import com.boozallen.aissemble.configuration.store.ConfigLoader;
 import com.boozallen.aissemble.configuration.store.Property;
+import com.boozallen.aissemble.configuration.store.PropertyKey;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,9 +39,10 @@ public class ConfigService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getProperty(@PathParam("groupName") String groupName,
                               @PathParam("propertyName") String propertyName) {
+        PropertyKey propertyKey = new PropertyKey(groupName, propertyName);
         Property property = null;
         try {
-             property = this.configLoader.read(groupName, propertyName);
+             property = this.configLoader.read(propertyKey);
         } catch (Exception e) {
             logger.error(String.format("Error reading property - groupName: %s, propertyName: %s", groupName, propertyName), e);
         }

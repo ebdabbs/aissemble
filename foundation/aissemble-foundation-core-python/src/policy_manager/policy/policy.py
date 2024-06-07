@@ -65,7 +65,7 @@ class Policy(BaseModel):
     alertOptions: AlertOptions = AlertOptions.ON_DETECTION
     identifier: str
     description: Optional[str]
-    target: Optional[Target]
+    targets: List[Optional[Target]] = []
     rules: List[ConfiguredRule] = []
 
     # Pydantic model config to allow policy subclasses to contain additional fields of any type

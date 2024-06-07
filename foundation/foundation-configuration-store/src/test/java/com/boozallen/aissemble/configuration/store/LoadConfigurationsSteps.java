@@ -66,7 +66,7 @@ public class LoadConfigurationsSteps {
 
     @Then("the configurations are loaded into the configuration store")
     public void theConfigurationsAreLoadedIntoConfigStore() {
-        String responseBody = getResponseBodyForProperty(expectedProperty.getGroupName(), expectedProperty.getName());
+        String responseBody = getResponseBodyForProperty(expectedProperty.getGroupName(), expectedProperty.getPropertyName());
         assertEquals(expectedProperty.toJsonString(), responseBody);
     }
 
@@ -77,7 +77,7 @@ public class LoadConfigurationsSteps {
 
     @And("the configuration service records the that the given configurations were loaded successfully")
     public void successStatusIsRecorded() {
-        String responseBody = getResponseBodyForProperty(fullyLoadProperty.getGroupName(), fullyLoadProperty.getName());
+        String responseBody = getResponseBodyForProperty(fullyLoadProperty.getGroupName(), fullyLoadProperty.getPropertyName());
         assertEquals(fullyLoadProperty.toJsonString(), responseBody);
     }
 
@@ -138,7 +138,7 @@ public class LoadConfigurationsSteps {
     @When("requests a configuration property")
     public void requestAConfigurationProperty() {
         String requestGroupName = expectedProperty.getGroupName();
-        String requestPropName = expectedProperty.getName();
+        String requestPropName = expectedProperty.getPropertyName();
         response = given()
                 .pathParam("groupName", requestGroupName)
                 .pathParam("propertyName", requestPropName)
@@ -167,19 +167,6 @@ public class LoadConfigurationsSteps {
         expectedProperties.add(expectedProperty);
 
         return expectedProperties;
-    }
-
-    private void assertPropertySetsEqual(Set<Property> expected, Set<Property> result) {
-        for (Property expectedProperty : expected) {
-            boolean matchFound = false;
-            for (Property property : result) {
-                if (expectedProperty.equals(property) && expectedProperty.getValue().equals(property.getValue())) {
-                    matchFound = true;
-                    break;
-                }
-            }
-            assertTrue("Could not find " + expectedProperty, matchFound);
-        }
     }
 
     private String getResponseBodyForProperty(String requestGroupName, String requestPropName) {        

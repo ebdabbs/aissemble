@@ -15,6 +15,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +59,12 @@ public class ConfigurePoliciesSteps {
 
     @Given("a policy has been configured with {int} rules")
     public void a_policy_has_been_configured_with_rule(Integer numberRules) {
-        createValidPolicy(numberRules);
+        createValidPolicyWithRules(numberRules);
+    }
+
+    @Given("a policy has been configured with {int} targets")
+    public void a_policy_has_been_configured_with_targets(Integer numberTargets) {
+        createValidPolicyWithTargets(numberTargets);
     }
 
     @Given("a rule within a policy has been configured without a class name")
@@ -79,13 +85,13 @@ public class ConfigurePoliciesSteps {
 
     @Given("a valid policy exists")
     public void a_valid_policy_exists() {
-        createValidPolicy(RandomUtils.nextInt(1, 4));
+        createValidPolicyWithRules(RandomUtils.nextInt(1, 4));
     }
 
     @Given("the policy specifies a target")
     public void the_policy_specifies_a_target(List<Target> targetList) {
         Target expectedTarget = targetList.get(0);
-        policyInput.setTarget(expectedTarget);
+        policyInput.setTargets(Arrays.asList(expectedTarget));
     }
 
     @Given("a policy exists with the following target:")
@@ -93,7 +99,15 @@ public class ConfigurePoliciesSteps {
         identifier = RandomStringUtils.randomAlphabetic(10);
         policyInput = new PolicyInput(identifier);
         Target expectedTarget = targetList.get(0);
-        policyInput.setTarget(expectedTarget);
+        policyInput.setTargets(Arrays.asList(expectedTarget));
+    }
+
+    @Given("a policy exists with the following targets:")
+    public void a_policy_exists_with_the_following_targets(List<Target> targetsList) {
+        identifier = RandomStringUtils.randomAlphabetic(10);
+        policyInput = new PolicyInput(identifier);
+        List<Target> expectedTargets = targetsList;
+        policyInput.setTargets(expectedTargets);
     }
 
     @Given("a policy rule that uses the class {string} with the following configurations:")
@@ -127,13 +141,19 @@ public class ConfigurePoliciesSteps {
 
     @When("the policy rule is read in")
     public void the_policy_rule_is_read_in() {
-        policyRule = policyManager.validateAndConfigureRule(ruleInput, new Target());
+        policyRule = policyManager.validateAndConfigureRule(ruleInput, Arrays.asList(new Target()));
     }
 
     @Then("the policy has {int} corresponding rules")
     public void the_policy_has_corresponding_rules(int expectedNumber) {
         List<ConfiguredRule> actualRules = getActualRules();
         assertEquals("Number of configured rules did not match expected", expectedNumber, actualRules.size());
+    }
+
+    @Then("the policy has {int} corresponding targets")
+    public void the_policy_has_corresponding_targets(int expectedNumber) {
+        List<Target> actualTargets = getActualTargets();
+        assertEquals("Number of configured targets did not match expected", expectedNumber, actualTargets.size());
     }
 
     @Then("the rule is ignored")
@@ -160,13 +180,13 @@ public class ConfigurePoliciesSteps {
 
     @Then("the target type is set as {string}")
     public void the_target_type_is_set_as(String expectedType) {
-        Target actualTarget = getActualTarget();
+        Target actualTarget = getActualTargets().get(0);
         assertEquals("The target type did not match the expected", expectedType, actualTarget.getType());
     }
 
     @Then("the target's retrieve url is set as {string}")
     public void the_target_s_retrieve_url_is_set_as(String expectedRetrieveUrl) {
-        Target actualTarget = getActualTarget();
+        Target actualTarget = getActualTargets().get(0);
         assertEquals("The target expected retrieve url did not match the expected", expectedRetrieveUrl,
                 actualTarget.getRetrieveUrl());
     }
@@ -177,9 +197,23 @@ public class ConfigurePoliciesSteps {
         List<ConfiguredRule> actualRules = getActualRules();
         assertEquals("The number of rules was unexpectedly not 1", 1, actualRules.size());
         ConfiguredRule actualRule = actualRules.get(0);
-        ConfiguredTarget actualTargetConfigurations = actualRule.getTargetConfigurations();
-        assertNotNull("Target configurations for algorithm were unexpectedly null", actualTargetConfigurations);
-        verifyConfigurations(expectedConfigurations, actualTargetConfigurations.getTargetConfigurations());
+        ConfiguredTarget actualConfiguredTarget = actualRule.getConfiguredTargets().get(0);
+        assertNotNull("Target configurations for algorithm were unexpectedly null", actualConfiguredTarget);
+        verifyConfigurations(expectedConfigurations, actualConfiguredTarget.getTargetConfigurations());
+    }
+
+    @Then("the targets configurations are available to the rule")
+    public void the_targets_configurations_are_available_to_the_rule() {
+        
+        List<ConfiguredRule> actualRules = getActualRules();
+        assertEquals("The number of rules was unexpectedly not 1", 1, actualRules.size());
+        ConfiguredRule actualRule = actualRules.get(0);
+        List<ConfiguredTarget> actualConfiguredTargets = actualRule.getConfiguredTargets();
+        assertNotNull("Target configurations for algorithm were unexpectedly null", actualConfiguredTargets);
+
+        for (ConfiguredTarget actualConfiguredTarget: actualConfiguredTargets) {
+            verifyConfigurations(expectedConfigurations, actualConfiguredTarget.getTargetConfigurations());
+        }
     }
     
     public void verifyConfigurations(Map<String, Object> expectedConfigurations, Map<String, Object> actualConfigurations) {
@@ -195,11 +229,11 @@ public class ConfigurePoliciesSteps {
         }
     }
 
-    private Target getActualTarget() {
+    private List<Target> getActualTargets() {
         Policy actualPolicy = getActualPolicy();
-        Target actualTarget = actualPolicy.getTarget();
-        assertNotNull("Target was unexpectedly null", actualTarget);
-        return actualTarget;
+        List<Target> actualTargets = actualPolicy.getTargets();
+        assertNotNull("Targets was unexpectedly null", actualTargets);
+        return actualTargets;
     }
 
     private List<ConfiguredRule> getActualRules() {
@@ -214,10 +248,17 @@ public class ConfigurePoliciesSteps {
         return policies.get(identifier);
     }
 
-    private void createValidPolicy(int numberRules) {
+    private void createValidPolicyWithRules(int numberRules) {
         identifier = RandomStringUtils.randomAlphabetic(10);
         policyInput = new PolicyInput(identifier);
         policyInput.setRules(PolicyTestUtil.getRandomRules(numberRules));
+    }
+
+    private void createValidPolicyWithTargets(int numberTargets) {
+        identifier = RandomStringUtils.randomAlphabetic(10);
+        policyInput = new PolicyInput(identifier);
+        policyInput.setRules(PolicyTestUtil.getRandomRules(1));
+        policyInput.setTargets(PolicyTestUtil.getRandomTargets(numberTargets));
     }
 
     private void addInvalidRules(PolicyInput policyInput) {

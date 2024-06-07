@@ -11,6 +11,7 @@ package com.boozallen.aissemble.core.policy.configuration.policy;
  */
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.boozallen.aissemble.core.policy.configuration.configuredrule.ConfiguredRule;
@@ -32,7 +33,7 @@ public class DefaultPolicy implements Policy {
 
     private AlertOptions alertOptions = DEFAULT;
 
-    private Target target;
+    private List<Target> targets = new ArrayList<>();
 
     private List<ConfiguredRule> rules = new ArrayList<>();
 
@@ -96,11 +97,32 @@ public class DefaultPolicy implements Policy {
 
     @Override
     public Target getTarget() {
-        return this.target;
+        return getTargets().isEmpty() ? null : getTargets().get(0);
     }
 
+    /**
+     * This method is deprecated and should not be used. Targets are now represented as
+     * a {@link List} of {@link Target}'s instead of a single {@link Target} attribute.
+     * @Deprecated this method is replaced by {@link #setTargets()}
+     */
+    @Deprecated
     public void setTarget(Target target) {
-        this.target = target;
+        setTargets(Arrays.asList(target));
     }
 
+    @Override
+    public List<Target> getTargets() {
+        return this.targets;
+    }
+
+    public void setTargets(List<Target> targets) {
+        this.targets = targets;
+    }
+
+    public void addTarget(Target target) {
+        if (this.targets == null) {
+            this.targets = new ArrayList<>();
+        }
+        this.targets.add(target);
+    }
 }

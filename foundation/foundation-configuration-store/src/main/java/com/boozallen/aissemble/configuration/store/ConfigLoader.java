@@ -177,19 +177,18 @@ public class ConfigLoader {
     }
 
     /**
-     * Read the Property from store with given group name and property name
-     * @param groupName group name
-     * @param propertyName property name
+     * Read property from store with given {@link PropertyKey} containing the group name and property name
+     * @param PropertyKey property key
      * @return property read from the store
      */
-    public Property read(String groupName, String propertyName) {
-        logger.info(String.format("Read property with groupName: %s, propertyName: %s from the store.", groupName, propertyName));
-        return propertyDao.read(groupName, propertyName);
+    public Property read(PropertyKey propertyKey) {
+        logger.info(String.format("Read property with groupName: %s, propertyName: %s from the store.", propertyKey.getGroupName(), propertyKey.getPropertyName()));
+        return propertyDao.read(propertyKey);
     }
     
     public boolean isFullyLoaded() {
         try {
-            Property statusProperty = propertyDao.read("load-status", "fully-loaded");
+            Property statusProperty = propertyDao.read(new PropertyKey("load-status", "fully-loaded"));
             return statusProperty != null && "true".equals(statusProperty.getValue());
         } catch (Exception e) {
             logger.warn("Properties are not loaded previously, continue", e);
