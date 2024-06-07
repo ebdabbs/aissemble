@@ -28,20 +28,16 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.buildBranch }}
-      - name: install curl
-        run: sudo apt-get install -y curl
-      - name: install git
-        run: sudo apt-get install -y git-all
-      - name: install PyEnv
+      - name: Install required packages
         run: |
-          curl https://pyenv.run | bash
-          PYENV_ROOT="$HOME/.pyenv"
-          export PATH="$HOME/.pyenv/bin;$PATH"
-          eval "$(pyenv init -)"
-      - name: Install Python # use direct install rather than pyenv for CI for large speed improvement
-        uses: actions/setup-python@v5
+          sudo apt-get update
+          sudo apt install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev curl \
+              git libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev zip unzip \
+              libpython3.11
+      - name: Install Python
+        uses: gabrielfalcao/pyenv-action@v18
         with:
-          python-version: '3.11.4'
+          default: 3.11.4
       - name: Load cached Poetry installation
         id: cached-poetry
         uses: actions/cache@v4
