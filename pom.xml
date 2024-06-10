@@ -43,7 +43,7 @@
 
     <scm>
         <connection>scm:git:https://github.com/boozallen/aissemble.git</connection>
-        <developerConnection>scm:git:https://github.com/boozallen/aissemble.git</developerConnection>
+        <developerConnection>scm:git:ssh://git@ssh.github.com:443/boozallen/aissemble.git</developerConnection>
         <url>https://github.com/boozallen/aissemble</url>
         <tag>HEAD</tag>
     </scm>
@@ -284,7 +284,7 @@
                           the habushu-managed updates to pyproject.toml files lags behind. To prevent the first
                           committer after a release from needing to commit these files, we force the update here. -->
                         <completionGoals>org.technologybrewery.habushu:habushu-maven-plugin:initialize-habushu -Dmaven.build.cache.enabled=false</completionGoals>
-                        <releaseProfiles>release</releaseProfiles>
+                        <releaseProfiles>ossrh-release</releaseProfiles>
                     </configuration>
                 </plugin>
                 <plugin>
